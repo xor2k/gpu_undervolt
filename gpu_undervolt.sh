@@ -39,17 +39,13 @@
 # Currently supported cards: see undervolt_all_gpu below. If your card is not
 # listed, just look up the clocks at Wikipedia and add them to the list. In
 #
-#     adjust_gpu $i 1480 1582 100
+#     adjust_gpu $i 210 1695 200
 #
-# the third argument (here 100) means a clock offset of 100 Mhz. The larger,
+# the third argument (here 200) means a clock offset of 200 Mhz. The larger,
 # the more intense the undervolting. Too much undervolting destabilizes the
 # system and can make it crash. Therefore, this value can be tuned and an
 # actual setting can be verfied with a benchmark, e.g. some deep learning
 # training or your favorite GPU intense game.
-#
-# Also note that this script locks the GPU clocks which means the GPU will
-# consume more energy while idle. Therefore, only use it before the actual
-# workload and run "sudo sh gpu_undervolt.sh disable" afterwards.
 #
 ################################################################################
 
@@ -59,14 +55,14 @@ undervolt_all_gpu(){
     i=0
 
     for type in $types; do
-        if [ "$type" = "NVIDIA_GeForce_GTX_1080_Ti" ]; then
-            adjust_gpu $i 1480 1582 100
-        elif [ "$type" = "NVIDIA_GeForce_GTX_1070" ]; then
-            adjust_gpu $i 1506 1683 100
-        elif [ "$type" = "NVIDIA_GeForce_RTX_2070_SUPER" ]; then
-            adjust_gpu $i 1605 1770 100
-        elif [ "$type" = "NVIDIA_GeForce_RTX_3090" ]; then
-            adjust_gpu $i 1395 1695 200
+        # if [ "$type" = "NVIDIA_GeForce_GTX_1080_Ti" ]; then
+        #     adjust_gpu $i ? 1582 100
+        # elif [ "$type" = "NVIDIA_GeForce_GTX_1070" ]; then
+        #     adjust_gpu $i ? 1683 100
+        # elif [ "$type" = "NVIDIA_GeForce_RTX_2070_SUPER" ]; then
+        #     adjust_gpu $i ? 1770 100
+        if [ "$type" = "NVIDIA_GeForce_RTX_3090" ]; then
+            adjust_gpu $i 210 1695 200
         else
             echo unknown type: $type
             exit 1
@@ -170,7 +166,6 @@ if [ $# -eq 1 ] && [ $1 = 'disable' ]; then
     nvidia-smi -pm 0
     nvidia-smi -rgc
     run_nvidia_settings \
-     -a GPUPowerMizerMode=0 \
      -a GPUGraphicsClockOffsetAllPerformanceLevels=0
 
     exit 0
@@ -188,7 +183,6 @@ adjust_gpu() {
     nvidia-smi -i $gpu -lgc $((gpu_low - offset)),$((gpu_high - offset))
 
     run_nvidia_settings \
-     -a [gpu:$gpu]/GPUPowerMizerMode=1 \
      -a [gpu:$gpu]/GPUGraphicsClockOffsetAllPerformanceLevels=$offset
 
 }
