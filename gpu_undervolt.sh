@@ -39,7 +39,7 @@
 # Currently supported cards: see undervolt_all_gpu below. If your card is not
 # listed, just look up the clocks at Wikipedia and add them to the list. In
 #
-#     adjust_gpu $i 210 1695 200
+#     adjust_gpu $i 1695 200
 #
 # the third argument (here 200) means a clock offset of 200 Mhz. The larger,
 # the more intense the undervolting. Too much undervolting destabilizes the
@@ -55,14 +55,14 @@ undervolt_all_gpu(){
     i=0
 
     for type in $types; do
-        # if [ "$type" = "NVIDIA_GeForce_GTX_1080_Ti" ]; then
-        #     adjust_gpu $i ? 1582 100
-        # elif [ "$type" = "NVIDIA_GeForce_GTX_1070" ]; then
-        #     adjust_gpu $i ? 1683 100
-        # elif [ "$type" = "NVIDIA_GeForce_RTX_2070_SUPER" ]; then
-        #     adjust_gpu $i ? 1770 100
-        if [ "$type" = "NVIDIA_GeForce_RTX_3090" ]; then
-            adjust_gpu $i 210 1695 200
+        if [ "$type" = "NVIDIA_GeForce_GTX_1080_Ti" ]; then
+            adjust_gpu $i 1582 100
+        elif [ "$type" = "NVIDIA_GeForce_GTX_1070" ]; then
+            adjust_gpu $i 1683 100
+        elif [ "$type" = "NVIDIA_GeForce_RTX_2070_SUPER" ]; then
+            adjust_gpu $i 1770 100
+        elif [ "$type" = "NVIDIA_GeForce_RTX_3090" ]; then
+            adjust_gpu $i 1695 200
         else
             echo unknown type: $type
             exit 1
@@ -128,7 +128,7 @@ Section "OutputClass"
 EndSection
 EOF
         echo "created $xorg_conf_file."
-        some_modifications_happened=True
+        some_modifications_happened=true
     fi
     if [ "$some_modifications_happened" = true ]; then
         echo "Some modifications happened, please reboot."
@@ -175,12 +175,11 @@ fi
 adjust_gpu() {
     
     gpu=$1
-    gpu_low=$2 # e.g. 1605 (RTX 2070 Super)
-    gpu_high=$3 # e.g. 1770 (RTX 2070 Super)
-    offset=$4
+    gpu_high=$2 # e.g. 1770 (RTX 2070 Super)
+    offset=$3
 
     nvidia-smi -i $gpu -pm 1
-    nvidia-smi -i $gpu -lgc $((gpu_low - offset)),$((gpu_high - offset))
+    nvidia-smi -i $gpu -lgc 100,$((gpu_high - offset))
 
     run_nvidia_settings \
      -a [gpu:$gpu]/GPUGraphicsClockOffsetAllPerformanceLevels=$offset

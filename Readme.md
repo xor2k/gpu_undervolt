@@ -14,7 +14,7 @@ Requirements:
 Currently supported cards: see undervolt_all_gpu below. If your card is not
 listed, just look up the clocks at Wikipedia and add them to the list. In
 
-    adjust_gpu $i 210 1695 200
+    adjust_gpu $i 1695 200
 
 the third argument (here 200) means a clock offset of 200 Mhz. The larger,
 the more intense the undervolting. Too much undervolting destabilizes the
