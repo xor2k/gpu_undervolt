@@ -65,6 +65,8 @@ undervolt_all_gpu(){
             adjust_gpu $i 1506 1683 100
         elif [ "$type" = "NVIDIA_GeForce_RTX_2070_SUPER" ]; then
             adjust_gpu $i 1605 1770 100
+        elif [ "$type" = "NVIDIA_GeForce_RTX_3090" ]; then
+            adjust_gpu $i 1395 1695 200
         else
             echo unknown type: $type
             exit 1
@@ -159,7 +161,8 @@ if [ $(count $xauthority_to_use) -lt 1 ]; then
 fi
 
 run_nvidia_settings() {
-    DISPLAY=:0 XAUTHORITY=$xauthority_to_use nvidia-settings $@
+    DISPLAY=$(cd /tmp/.X11-unix && for x in X*; do echo ":${x#X}"; done) \
+    XAUTHORITY=$xauthority_to_use nvidia-settings $@
 }
 
 if [ $# -eq 1 ] && [ $1 = 'disable' ]; then
@@ -180,10 +183,8 @@ adjust_gpu() {
     gpu_low=$2 # e.g. 1605 (RTX 2070 Super)
     gpu_high=$3 # e.g. 1770 (RTX 2070 Super)
     offset=$4
-    # max_power_watts=125
 
     nvidia-smi -i $gpu -pm 1
-    # nvidia-smi -pl $max_power_watts
     nvidia-smi -i $gpu -lgc $((gpu_low - offset)),$((gpu_high - offset))
 
     run_nvidia_settings \
