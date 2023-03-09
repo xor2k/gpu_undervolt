@@ -182,7 +182,7 @@ adjust_gpu() {
     offset=$3
 
     nvidia-smi -i $gpu -pm 1
-    nvidia-smi -i $gpu -lgc 100,$((gpu_high - offset))
+    nvidia-smi -i $gpu -lgc 0,$((gpu_high - offset))
 
     run_nvidia_settings \
      -a [gpu:$gpu]/GPUGraphicsClockOffsetAllPerformanceLevels=$offset
