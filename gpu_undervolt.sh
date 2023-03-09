@@ -59,6 +59,9 @@ undervolt_all_gpu(){
             adjust_gpu $i 1582 100
         elif [ "$type" = "NVIDIA_GeForce_GTX_1070" ]; then
             adjust_gpu $i 1683 100
+        elif [ "$type" = "NVIDIA_GeForce_GTX_1650_with_Max-Q_Design" ]; then
+            # discussion see https://github.com/xor2k/gpu_undervolt/issues/3
+            adjust_gpu $i 1595 220            
         elif [ "$type" = "NVIDIA_GeForce_RTX_2070_SUPER" ]; then
             adjust_gpu $i 1770 100
         elif [ "$type" = "NVIDIA_GeForce_RTX_3090" ]; then
